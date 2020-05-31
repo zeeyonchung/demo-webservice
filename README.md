@@ -56,3 +56,23 @@ dependencies {
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 ```
+
+
+### 스프링 부트 OAuth
+- spring-security-oauth2-autoconfigure를 사용하면 스프링부트 2에서도 1.5에서 쓰던 설정을 그대로 사용할 수 있다.
+- 스프링부트 2 시큐리티에서는 기본적으로 인증 성공 후 리다이렉트 URL로 `{도메인}/login/oauth2/code/{소셜서비스코드}`를 지원한다.
+- 로그인은 `/oauth2/authorization/google`, 로그아웃은 `/logout`
+- 도메인
+    - [User](src/main/java/org/example/domain/user/User.java)
+    : 사용자 정보를 담당할 도메인
+    - [Role](src/main/java/org/example/domain/user/Role.java)
+    : 사용자의 권한을 관리할 Enum
+        - 스프링 시큐리티에서는 권한 코드 앞이 항상 `ROLE_` 이어야 한다.
+- 스프링 시큐리티 설정
+    - [build.gradle](./build.gradle)
+    ```
+    compile('org.springframework.boot:spring-boot-starter-oauth2-client')
+    ```
+  - 소셜 로그인 등 클라이언트 입장에서 소셜 기능 구현시 필요한 의존성
+  - spring-security-oauth2-client 와 spring-security-oauth2-jose 를 관리해준다.
+  - [SecurityConfig](src/main/java/org/example/config/auth/SecurityConfig.java)
