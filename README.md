@@ -73,6 +73,31 @@ dependencies {
     ```
     compile('org.springframework.boot:spring-boot-starter-oauth2-client')
     ```
-  - 소셜 로그인 등 클라이언트 입장에서 소셜 기능 구현시 필요한 의존성
-  - spring-security-oauth2-client 와 spring-security-oauth2-jose 를 관리해준다.
-  - [SecurityConfig](src/main/java/org/example/config/auth/SecurityConfig.java)
+    - [application-oauth.properties](src/main/resources/application-oauth-sample.properties) (이 설정파일이 포함되게 설정해줄 것)
+    ```
+    spring.security.oauth2.client.registration.google.client-id=
+    spring.security.oauth2.client.registration.google.client-secret=
+    spring.security.oauth2.client.registration.google.scope=profile,email
+    ```
+    - 소셜 로그인 등 클라이언트 입장에서 소셜 기능 구현시 필요한 의존성
+    - spring-security-oauth2-client 와 spring-security-oauth2-jose 를 관리해준다.
+    - [SecurityConfig](src/main/java/org/example/config/auth/SecurityConfig.java)
+- 세션 데이터베이스에 저장하기
+    - 세션은 기본적으로 실행되는 WAS의 메모리에 저장된다.
+    - 세션 저장소 선택지
+        - 톰캣 세션 사용
+            - 2대 이상의 WAS가 구동되는 환경에서는 톰캣들간의 세션 공유 설정 필요
+        - 데이터베이스 사용
+            - 로그인 요청마다 DB IO 발생
+            - 로그인 요청이 많이 없는 사내 시스템 용도로 많이 사용
+        - Redis, Memcached 등 메모리 DB 사용
+            - 외부 메모리 서버 필요
+            
+    - [build.gradle](./build.gradle)
+    ```
+    compile('org.springframework.session:spring-session-jdbc')
+    ```
+    - [application.properties](src/main/resources/application.properties)
+    ```
+    spring.session.store-typ=jdbc
+    ```
