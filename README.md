@@ -101,3 +101,34 @@ dependencies {
     ```
     spring.session.store-typ=jdbc
     ```
+- 테스트하기
+    - src/main 과 src/test는 본인만의 환경 구성을 가진다. test에 application.properties가 없으면 main의 설정을 그대로 가져오는데,
+    자동으로 가져오는 건 application.properties까지고 application-oauth.properties는 아니다. 그래서 테스트를 위한 가짜 설정값을 등록해줘야 한다.
+    - 임의의 인증된 사용자 추가하기
+        - [build.gradle](./build.gradle)
+        ```
+        testCompile("org.springframework.security:spring-security-test")
+        ```
+        - 테스트에 사용자 인증 추가하기
+        ```
+        @Test
+        @WithMockUser(roles="USER")
+        void test() {...}
+        ```
+        `@WithMockUser`는 MockMvc에서만 작동한다.
+        ```
+        @Autowired
+        private WebApplicationContext context;
+    
+        private MockMvc mvc;
+    
+        @Before
+        public void setup(){
+            mvc = MockMvcBuilders
+                    .webAppContextSetup(context)
+                    .apply(springSecurity())
+                    .build();
+        }
+        ```
+    - `@WebMvcTest`는 WebSecurityConfiguereAdapter, WebMvcConfigurer, @ControllerAdvice, @Controller 등을 스캔하고, `@Component`, `@Service`, `@Repository`는 스캔하지 않는다.
+    그래서 SecurityConfig는 읽었지만 SecurityConfig 생성을 위해 필요한 CustomOAuth2UserService를 읽지 못해서 에러가 발생한다. 그래서 스캔 대상에서 SecurityConfig를 제외한다.
