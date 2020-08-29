@@ -19,7 +19,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .headers().frameOptions().disable() //h2-console 사용 위함
                 .and()
                     .authorizeRequests() //URL별 권한 관리 설정
-                    .antMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-console/**").permitAll()
+                    .antMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-console/**", "/profile").permitAll()
                     .antMatchers("/api/v1/**").hasRole(Role.USER.name()) //USER 권한을 가진 사용자만 가능
                     .anyRequest().authenticated() //설정된 값들 이외의 나머지 URL은 로그인한 사용자만 가능
                 .and()
